@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Author {
+  id    Int    @id @default(autoincrement())
+  name  String
+  books Book[]
+}
+
+model Book {
+  id         Int      @id @default(autoincrement())
+  title      String
+  image      String?
+  author     Author   @relation(fields: [authorId], references: [id])
+  authorId   Int
+  issuedTo   Student? @relation(fields: [issuedToId], references: [id]) 
+  issuedToId Int? // student id who has issued this book
+}
+
+
+
+// student can have many books, but book can have only one student at a time
+model Student {
+  id          Int    @id @default(autoincrement())
+  name        String
+  issuedBooks Book[]
+}
